@@ -26,7 +26,6 @@ const show = (req, res) => {
 }
 
 const add = (req, res) => {
-    console.log(req.body);
     let contact = new Contact(req.body)
     contact.save()
     .then(response => {

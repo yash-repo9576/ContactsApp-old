@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Header from './Header';
-import AddContact from './AddContact';
 import ContactList from './ContactList';
-import UpdateContact from './UpdateContact';
 
 function App() {
   const [contacts, setContacts] = useState([]);
@@ -41,8 +39,26 @@ function App() {
     getContactHandler();
   }
 
-  const updateContactHandler = async ({ id, contact }) => {
+  const updateContactHandler = async (reqBody) => {
+    const id = reqBody.id;
+    const updatedContact = reqBody.contact;
     console.log(id);
+    console.log(updatedContact);
+    const response = await fetch('http://localhost:4000/api/contact/update', {
+      headers: {
+        "Content-type": "application/json"
+      },
+      method: "PUT",
+      body: JSON.stringify({
+        contactId: id,
+        name: updatedContact.name,
+        phone: updatedContact.phone,
+        email: updatedContact.email
+      })
+    })
+    const data = await response.json();
+    console.log(data);
+    getContactHandler();
   }
 
   // Read All Contacts
@@ -52,14 +68,8 @@ function App() {
 
   return (
     <div className="pb-2 bg-slate-200 h-screen"> 
-      <Header /> 
-      <div className="mx-4 flex justify-items-center">
-      <div>
-        <AddContact addContactHandler={addContactHandler}/>
-        <UpdateContact />
-      </div>
-      <ContactList contacts={contacts} getContactID={removeContactHandler}/> 
-      </div>
+      <Header addContactHandler={addContactHandler} /> 
+      <ContactList contacts={contacts} removeContactHandler={removeContactHandler} updateContactHandler={updateContactHandler} /> 
     </div>
   );
 }
