@@ -1,0 +1,34 @@
+version: "3"
+services:
+  next-app:
+    container_name: next-app
+    build: .\frontend
+    ports:
+      - "3000:3000"
+    networks:
+      - contact-app
+  api-server:
+    container_name: api-server
+    restart: always
+    build: .\backend
+    ports:
+      - "4000:4000"
+    networks:
+      - contact-app
+    links:
+      - mongo
+  mongo:
+    container_name: mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - contact-app
+    volumes:
+      - contact-mongo-data:/data/db
+networks:
+  contact-app:
+    driver: bridge
+volumes:
+  contact-mongo-data:
+    driver: local
